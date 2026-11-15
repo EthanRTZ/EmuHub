@@ -14,7 +14,16 @@ Les dépendances sont listées dans [requirements.txt](requirements.txt).
 
 ## Catalogue JSON
 
-Le catalogue se trouve dans [data/library.json](data/library.json). Les chemins
+Le catalogue local se trouve dans [data/library.json](data/library.json). Une
+base vierge versionnée est disponible dans
+[data/library.example.json](data/library.example.json). Pour initialiser
+manuellement un nouveau catalogue :
+
+```powershell
+Copy-Item data/library.example.json data/library.json
+```
+
+Les chemins
 sont relatifs à la racine du projet :
 
 ```json
@@ -42,7 +51,9 @@ sont relatifs à la racine du projet :
 
 Les dossiers `emu/` et `game/` restent locaux et leur contenu est exclu du
 dépôt Git. Le catalogue `data/library.json` est également local et ignoré par
-Git ; il est créé automatiquement au premier démarrage sur un nouveau PC.
+Git ; il est créé automatiquement au premier démarrage sur un nouveau PC. Le
+fichier `data/library.example.json` constitue uniquement le modèle vierge
+modifiable et versionné.
 Seuls les métadonnées et le code du hub sont versionnés.
 
 ## Gestion depuis l’interface
