@@ -33,6 +33,9 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
+# Local catalogue data
+data/library.json
+
 # Local emulator binaries, installations, and game files
 emu/*
 !emu/.gitkeep

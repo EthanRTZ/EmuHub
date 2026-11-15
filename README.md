@@ -41,4 +41,15 @@ sont relatifs à la racine du projet :
 ```
 
 Les dossiers `emu/` et `game/` restent locaux et leur contenu est exclu du
-dépôt Git. Seuls les métadonnées et le code du hub sont versionnés.
+dépôt Git. Le catalogue `data/library.json` est également local et ignoré par
+Git ; il est créé automatiquement au premier démarrage sur un nouveau PC.
+Seuls les métadonnées et le code du hub sont versionnés.
+
+## Gestion depuis l’interface
+
+- **Fichier > Ajouter un jeu** ouvre une fenêtre pour choisir le fichier du jeu
+  et l’émulateur associé.
+- **Fichier > Supprimer le jeu sélectionné** retire uniquement le jeu du
+  catalogue JSON, sans supprimer son fichier.
+- **Options > Ajouter un émulateur** permet d’enregistrer un exécutable.
+- **Options > Recharger le catalogue** relit `data/library.json`.

@@ -64,5 +64,17 @@ class Catalog:
             f"Aucun émulateur configuré pour le jeu « {game.name} »."
         )
 
+    def add_emulator(self, emulator: Emulator) -> None:
+        self.emulators.append(emulator)
+        self.save()
+
+    def add_game(self, game: Game) -> None:
+        self.games.append(game)
+        self.save()
+
+    def remove_game(self, game: Game) -> None:
+        self.games = [stored_game for stored_game in self.games if stored_game.id != game.id]
+        self.save()
+
     def resolve_path(self, relative_path: str) -> Path:
         return (self.project_root / relative_path).resolve()
