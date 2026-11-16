@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import (
     QDialog,
     QLabel,
@@ -39,6 +40,7 @@ class MainWindow(QMainWindow):
         container.setLayout(layout)
         self.setCentralWidget(container)
         self._populate_games()
+        QTimer.singleShot(0, self._prompt_initial_setup)
 
     def _create_menu_bar(self) -> None:
         file_menu = self.menuBar().addMenu("Fichier")
@@ -87,6 +89,27 @@ class MainWindow(QMainWindow):
             self.catalog.add_game(dialog.game())
             self._populate_games()
 
+    def _prompt_initial_setup(self) -> None:
+        if not self.catalog.emulators:
+            answer = QMessageBox.question(
+                self,
+                "Configurer EmuHub",
+                "Aucun émulateur n’est configuré. Voulez-vous ajouter votre premier émulateur ?",
+            )
+            if answer != QMessageBox.StandardButton.Yes:
+                return
+            if not self._add_emulator():
+                return
+
+        if not self.catalog.games:
+            answer = QMessageBox.question(
+                self,
+                "Ajouter votre premier jeu",
+                "Voulez-vous maintenant ajouter votre premier jeu ?",
+            )
+            if answer == QMessageBox.StandardButton.Yes:
+                self._add_game()
+
     def _delete_selected_game(self) -> None:
         item = self.game_list.currentItem()
         game = item.data(256) if item else None
@@ -102,10 +125,12 @@ class MainWindow(QMainWindow):
             self.catalog.remove_game(game)
             self._populate_games()
 
-    def _add_emulator(self) -> None:
+    def _add_emulator(self) -> bool:
         dialog = AddEmulatorDialog(self.catalog.project_root, self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             self.catalog.add_emulator(dialog.emulator())
+            return True
+        return False
 
     def _reload_catalog(self) -> None:
         try:

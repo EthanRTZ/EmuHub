@@ -49,6 +49,11 @@ sont relatifs à la racine du projet :
 }
 ```
 
+Au premier démarrage avec une bibliothèque vide, EmuHub propose de configurer
+d'abord un émulateur puis un premier jeu. Lors de l'ajout d'un jeu, sélectionnez
+son fichier en premier : son nom est repris depuis le nom du fichier et sa
+plateforme est déduite de son extension.
+
 Les dossiers `emu/` et `game/` restent locaux et leur contenu est exclu du
 dépôt Git. Le catalogue `data/library.json` est également local et ignoré par
 Git ; il est créé automatiquement au premier démarrage sur un nouveau PC. Le

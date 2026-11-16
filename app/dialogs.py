@@ -97,7 +97,9 @@ class AddGameDialog(QDialog):
         self.setWindowTitle("Ajouter un jeu")
 
         self.name_input = QLineEdit()
+        self.name_input.setReadOnly(True)
         self.platform_input = QLineEdit()
+        self.platform_input.setReadOnly(True)
         self.rom_input = QLineEdit()
         rom_button = QPushButton("Parcourir…")
         rom_button.clicked.connect(self._select_rom)
@@ -112,9 +114,9 @@ class AddGameDialog(QDialog):
         rom_layout.addWidget(rom_button)
 
         form = QFormLayout()
+        form.addRow("Fichier du jeu :", rom_layout)
         form.addRow("Nom :", self.name_input)
         form.addRow("Plateforme :", self.platform_input)
-        form.addRow("Fichier du jeu :", rom_layout)
         form.addRow("Émulateur :", self.emulator_input)
 
         buttons = QDialogButtonBox(
@@ -137,8 +139,17 @@ class AddGameDialog(QDialog):
         )
         if path:
             self.rom_input.setText(path)
-            if not self.name_input.text().strip():
-                self.name_input.setText(Path(path).stem)
+            self.name_input.setText(Path(path).stem)
+            self.platform_input.setText(platform_for_extension(Path(path).suffix))
+            self._select_matching_emulator()
+
+    def _select_matching_emulator(self) -> None:
+        platform = self.platform_input.text().casefold()
+        for index in range(self.emulator_input.count()):
+            emulator = self.emulator_input.itemData(index)
+            if isinstance(emulator, Emulator) and emulator.platform.casefold() == platform:
+                self.emulator_input.setCurrentIndex(index)
+                return
 
     def accept(self) -> None:
         if not self.name_input.text().strip():
@@ -170,6 +181,25 @@ class AddGameDialog(QDialog):
             rom=_catalog_path(self.project_root, self.rom_input.text()),
             emulator_id=emulator.id,
         )
+
+
+def platform_for_extension(extension: str) -> str:
+    platforms = {
+        ".3ds": "Nintendo 3DS",
+        ".cso": "PSP",
+        ".gb": "Game Boy",
+        ".gba": "Game Boy Advance",
+        ".gbc": "Game Boy Color",
+        ".nds": "Nintendo DS",
+        ".nes": "NES",
+        ".n64": "Nintendo 64",
+        ".smc": "Super Nintendo",
+        ".sfc": "Super Nintendo",
+        ".v64": "Nintendo 64",
+        ".z64": "Nintendo 64",
+    }
+    normalized_extension = extension.casefold()
+    return platforms.get(normalized_extension, extension.lstrip(".").upper() or "Inconnue")
 
 
 def _catalog_path(project_root: Path, selected_path: str) -> str:
